@@ -1,20 +1,35 @@
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <locale.h>
 
 int main(void)
 {
-    time_t now;
-    time(&now);
+    wchar_t buff[40];
+    struct tm mytime = { .tm_year=116,
+                         .tm_mon=8,
+                         .tm_mday=2,
+                         .tm_hour=17,
+                         .tm_min=51,
+                         .tm_sec=10
+};
 
-    struct tm beg_month;
-    beg_month = *localtime(&now);
-    beg_month.tm_hour = 0;
-    beg_month.tm_min = 0;
-    beg_month.tm_sec = 0;
-    beg_month.tm_mday = 1;
-
-    double seconds = difftime(now, mktime(&beg_month));
-    printf("\n %.f seconds passed since the beginning of the month.\n\n", seconds);
-    return 0;
+    printf("\n The textual representation of specified date and time :\n");
+    if(wcsftime(buff, sizeof buff, L"%A %c", &mytime))
+    {
+        printf("\n%ls\n", buff);
+    }
+    else
+    {
+        puts("wcsftime failed");
+    }
+    setlocale(LC_ALL, "en_US.UTF-8");
+    if (wcsftime(buff, sizeof buff, L"%A %c", &mytime))
+    {
+        printf("%ls\n\n", buff);
+    }
+    else
+    {
+        puts("wcsftime failed");
+    }
 }
